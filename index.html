@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>林嘉威个人简介</title>
+    <style>
+        /* 基础样式 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: radial-gradient(circle, #0a0a0a, #1a1a1a);
+            color: white;
+            font-family: 'Helvetica Neue', sans-serif;
+            overflow: hidden;
+        }
+
+        /* 初始主圆圈 */
+        #mainCircle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8em;
+            cursor: pointer;
+            animation: float 6s ease-in-out infinite;
+            transition: all 0.5s ease;
+        }
+
+        /* 详情圆圈 */
+        .detail-circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        /* 激活后的卡片样式 */
+        .active-card {
+            width: 400px !important;
+            height: 300px !important;
+            border-radius: 15px !important;
+            z-index: 100;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* 动画效果 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: absolute;
+            bottom: 20px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- 主圆圈 -->
+    <div id="mainCircle" onclick="showDetails()">林嘉威</div>
+
+    <!-- 详情圆圈 -->
+    <div class="detail-circle" id="birth" style="left: 10%; top: 20%;">出生日期</div>
+    <div class="detail-circle" id="education" style="left: 70%; top: 20%;">教育经历</div>
+    <div class="detail-circle" id="hometown" style="left: 40%; top: 60%;">籍贯</div>
+
+    <script>
+        // 预定义内容数据
+        const contentData = {
+            birth: {
+                title: "出生日期",
+                content: "2003年5月8日"
+            },
+            education: {
+                title: "教育经历",
+                content: `
+                2008年9月-2015年6月 福建省福州市宁化小学
+                2015年6月-2019年6月 福建省福州市华侨中学
+                2019年9月-2022年6月 福建省福州市超德中学
+                2022年9月-至今 福建省武夷学院
+                `
+            },
+            hometown: {
+                title: "籍贯",
+                content: "福建省福州市台江区南二环路"
+            }
+        }
+
+        // 显示详情圆圈
+        function showDetails() {
+            const mainCircle = document.getElementById('mainCircle');
+            const circles = document.querySelectorAll('.detail-circle');
+            
+            // 主圆圈消失
+            mainCircle.style.opacity = '0';
+            mainCircle.style.pointerEvents = 'none';
+
+            // 显示详情圆圈
+            circles.forEach(circle => {
+                circle.style.display = 'flex';
+                circle.style.animation = 'fadeIn 0.8s ease-out';
+            });
+        }
+
+        // 点击详情圆圈
+        document.querySelectorAll('.detail-circle').forEach(circle => {
+            circle.addEventListener('click', function() {
+                // 隐藏其他圆圈
+                document.querySelectorAll('.detail-circle').forEach(other => {
+                    if(other !== this) other.style.display = 'none';
+                });
+
+                // 转换当前圆圈为卡片
+                this.classList.add('active-card');
+                this.innerHTML = `
+                    <div style="font-size:1.2em; margin-bottom:15px;">${contentData[this.id].title}</div>
+                    <div style="font-size:0.9em; line-height:1.5; white-space: pre-line;">${contentData[this.id].content}</div>
+                    <div class="back-btn" onclick="resetView()">返回</div>
+                `;
+            });
+        });
+
+        // 重置视图
+        function resetView() {
+            const mainCircle = document.getElementById('mainCircle');
+            const circles = document.querySelectorAll('.detail-circle');
+            
+            // 恢复主圆圈
+            mainCircle.style.opacity = '1';
+            mainCircle.style.pointerEvents = 'auto';
+
+            // 重置详情圆圈
+            circles.forEach(circle => {
+                circle.style.display = 'none';
+                circle.classList.remove('active-card');
+                circle.innerHTML = circle.id === 'birth' ? '出生日期' : 
+                                 circle.id === 'education' ? '教育经历' : '籍贯';
+            });
+        }
+    </script>
+</body>
+</html>
